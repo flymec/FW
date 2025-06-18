@@ -1121,7 +1121,7 @@ WidgetMetadata = {
 
 
 async function search(params = {}) {
-  const url = `https://jable.tv/search/${params.keyword}/?mode=async&function=get_block&block_id=list_videos_videos_list_search_result&q=${params.keyword}`;
+  const url = `https://netflav.com/search/${params.keyword}/?mode=async&function=get_block&block_id=list_videos_videos_list_search_result&q=${params.keyword}`;
   params.url = url;
   return await loadPage(params);
 }
