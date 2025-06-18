@@ -1121,7 +1121,7 @@ WidgetMetadata = {
 
 
 async function search(params = {}) {
-  const url = `https://netflav.com/search/`;
+  const url = `https://netflav.com/browse/`;
   params.url = url;
   return await loadPage(params);
 }
