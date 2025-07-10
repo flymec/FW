@@ -1,26 +1,56 @@
 WidgetMetadata = {
   id: "jable",
   title: "Jable",
-  description: "获取Jable全站视频",
+  description: "获取 Jable 视频",
   author: "nibiru",
   site: "https://github.com/quantumultxx/FW-Widgets",
-  version: "1.0.5",
+  version: "1.0.8",
   requiredVersion: "0.0.1",
+  detailCacheDuration: 60,
   modules: [
+    // 搜索模块
+    {
+      title: "搜索",
+      description: "搜索",
+      requiresWebView: false,
+      functionName: "search",
+      cacheDuration: 3600,
+      params: [
+        {
+          name: "keyword",
+          title: "关键词",
+          type: "input",
+          description: "关键词",
+        },
+        {
+          name: "sort_by",
+          title: "排序",
+          type: "enumeration",
+          description: "排序",
+          enumOptions: [
+            { title: "最多观看", value: "video_viewed" },
+            { title: "近期最佳", value: "post_date_and_popularity" },
+            { title: "最近更新", value: "post_date" },
+            { title: "最多收藏", value: "most_favourited" },
+          ],
+        },
+        { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
+      ],
+    },
     // 热门模块
     {
       title: "热门",
       description: "热门影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
           title: "列表地址",
           type: "constant",
           description: "列表地址",
-          value:
-            "https://jable.tv/hot/?mode=async&function=get_block&block_id=list_videos_common_videos_list",
+          value: "https://jable.tv/hot/?mode=async&function=get_block&block_id=list_videos_common_videos_list",
         },
         {
           name: "sort_by",
@@ -43,14 +73,14 @@ WidgetMetadata = {
       description: "最新上市影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
           title: "列表地址",
           type: "constant",
           description: "列表地址",
-          value:
-            "https://jable.tv/new-release/?mode=async&function=get_block&block_id=list_videos_common_videos_list",
+          value: "https://jable.tv/new-release/?mode=async&function=get_block&block_id=list_videos_common_videos_list",
         },
         {
           name: "sort_by",
@@ -67,20 +97,20 @@ WidgetMetadata = {
       ],
     },
 
-        // 中文模块
+    // 中文模块
     {
       title: "中文",
       description: "中文字幕影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
           title: "列表地址",
           type: "constant",
           description: "列表地址",
-          value:
-            "https://jable.tv/categories/chinese-subtitle/?mode=async&function=get_block&block_id=list_videos_common_videos_list",
+          value: "https://jable.tv/categories/chinese-subtitle/?mode=async&function=get_block&block_id=list_videos_common_videos_list",
         },
         {
           name: "sort_by",
@@ -96,12 +126,13 @@ WidgetMetadata = {
         { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
       ],
     },
-                // 女优模块
+    // 女优模块
     {
       title: "女优",
       description: "按女优分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -378,12 +409,13 @@ WidgetMetadata = {
       ],
     },
 
-        // 衣着模块
+    // 衣着模块
     {
       title: "衣着",
       description: "按衣着分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -475,12 +507,13 @@ WidgetMetadata = {
         { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
       ],
     },
-                // 剧情模块
+    // 剧情模块
     {
       title: "剧情",
       description: "按剧情分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -560,13 +593,13 @@ WidgetMetadata = {
         { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
       ],
     },
-
-                // 地点模块
+    // 地点模块
     {
       title: "地点",
       description: "按地点分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -646,12 +679,13 @@ WidgetMetadata = {
         { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
       ],
     },
-                // 身材模块
+    // 身材模块
     {
       title: "身材",
       description: "按身材分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -727,12 +761,13 @@ WidgetMetadata = {
         { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
       ],
     },    
-                // 角色模块
+    // 角色模块
     {
       title: "角色",
       description: "按角色分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -816,12 +851,13 @@ WidgetMetadata = {
         { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
       ],
     },
-                // 交合模块
+    // 交合模块
     {
       title: "交合",
       description: "按交合分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -889,12 +925,13 @@ WidgetMetadata = {
         { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
       ],
     },
-                // 玩法模块
+    // 玩法模块
     {
       title: "玩法",
       description: "按玩法分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -982,12 +1019,13 @@ WidgetMetadata = {
         { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
       ],
     },    
-                    // 主题模块
+    // 主题模块
     {
       title: "主题",
       description: "按主题分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -1059,12 +1097,13 @@ WidgetMetadata = {
         { name: "from", title: "页码", type: "page", description: "页码", value: "1" },
       ],
     },
-                // 杂项模块
+    // 杂项模块
     {
       title: "杂项",
       description: "按杂项分类浏览影片",
       requiresWebView: false,
       functionName: "loadPage",
+      cacheDuration: 3600,
       params: [
         {
           name: "url",
@@ -1121,9 +1160,19 @@ WidgetMetadata = {
 
 
 async function search(params = {}) {
-  const url = `https://netflav.com/browse/`;
-  params.url = url;
-  return await loadPage(params);
+  const keyword = encodeURIComponent(params.keyword || "");
+  
+  let url = `https://jable.tv/search/${keyword}/?mode=async&function=get_block&block_id=list_videos_videos_list_search_result&q=${keyword}`;
+  
+  if (params.sort_by) {
+    url += `&sort_by=${params.sort_by}`;
+  }
+  
+  if (params.from) {
+    url += `&from=${params.from}`;
+  }
+  
+  return await loadPage({ ...params, url });
 }
 
 async function loadPage(params = {}) {
@@ -1144,8 +1193,6 @@ async function loadPageSections(params = {}) {
     if (params["from"]) {
       url += `&from=${params.from}`;
     }
-    // 1. 获取HTML内容
-    console.log("=== 获取HTML内容 ===");
     const response = await Widget.http.get(url, {
       headers: {
         "User-Agent":
@@ -1160,8 +1207,6 @@ async function loadPageSections(params = {}) {
     }
 
     const htmlContent = response.data;
-    console.log(`获取到HTML内容长度: ${htmlContent.length} 字符`);
-    console.log(htmlContent);
 
     return parseHtml(htmlContent);
   } catch (error) {
@@ -1171,8 +1216,6 @@ async function loadPageSections(params = {}) {
 }
 
 async function parseHtml(htmlContent) {
-  // 2. 解析HTML
-  console.log("\n=== 解析HTML ===");
   const $ = Widget.html.load(htmlContent);
   const sectionSelector = ".site-content .py-3,.pb-e-lg-40";
   const itemSelector = ".video-img-box";
@@ -1181,53 +1224,53 @@ async function parseHtml(htmlContent) {
   const titleSelector = ".title a";
 
   let sections = [];
-  //use cheerio to parse html
   const sectionElements = $(sectionSelector).toArray();
+  
   for (const sectionElement of sectionElements) {
     const $sectionElement = $(sectionElement);
     var items = [];
     const sectionTitle = $sectionElement.find(".title-box .h3-md").first();
     const sectionTitleText = sectionTitle.text();
-    console.log("sectionTitleText:", sectionTitleText);
     const itemElements = $sectionElement.find(itemSelector).toArray();
-    console.log("itemElements:", itemElements);
+    
     if (itemElements && itemElements.length > 0) {
       for (const itemElement of itemElements) {
         const $itemElement = $(itemElement);
         const titleId = $itemElement.find(titleSelector).first();
-        console.log("titleId:", titleId.length);
         const url = titleId.attr("href") || "";
-        console.log("url:", url);
+        
         if (url && url.includes("jable.tv")) {
           const durationId = $itemElement.find(durationSelector).first();
           const coverId = $itemElement.find(coverSelector).first();
           const cover = coverId.attr("data-src");
           const video = coverId.attr("data-preview");
           const title = titleId.text();
-          const duration = durationId.text();
+          const duration = durationId.text().trim();
+          
           const item = {
             id: url,
             type: "url",
             title: title,
-            durationText: duration,
             backdropPath: cover,
             previewUrl: video,
-            link: url
+            link: url,
+            mediaType: "movie",
+            durationText: duration,
+            description: duration
           };
-          console.log("item:", item);
           items.push(item);
         }
       }
-
+    }
+    
+    if (items.length > 0) {
       sections.push({
-        id: sectionTitleText,
-        type: "web",
         title: sectionTitleText,
-        childItems: items,
+        childItems: items
       });
     }
   }
-  console.log("sections:", sections);
+  
   return sections;
 }
 
@@ -1237,16 +1280,15 @@ async function loadDetail(link) {
       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
     },
   });
-  //get hls with regex var hlsUrl = 'https://hot-box-gen.mushroomtrack.com/hls/TJHqwWuFPCwYqa4hyv1cCg/1746892414/50000/50377/50377.m3u8';
   const hlsUrl = response.data.match(/var hlsUrl = '(.*?)';/)[1];
   if (!hlsUrl) {
     throw new Error("无法获取有效的HLS URL");
   }
-  console.log("hlsUrl:", hlsUrl);
   const item = {
     id: link,
     type: "detail",
     videoUrl: hlsUrl,
+    mediaType: "movie",
     customHeaders: {
       "Referer": link,
       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
