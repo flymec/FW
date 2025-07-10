@@ -1,7 +1,7 @@
 # FW-Widgets
 <p align="center">
   <br>
-  <img width="150" src="https://raw.githubusercontent.com/quantumultxx/FW-Widgets/refs/heads/main/icon/icon.PNG">
+  <img width="150" src="https://raw.githubusercontent.com/flyme/FW/main/icon/icon.png">
   <br>
   <br>
 </p>
