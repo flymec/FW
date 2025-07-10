@@ -1,7 +1,7 @@
 {
   "title": "flyme",
   "description": "汇集豆瓣、TMDB、IMDB、猫眼和Bangumi的各类榜单",
-  "icon": "https://github.com/flymec/FW/blob/main/icon/icon2.PNG",
+  "icon": "https://raw.githubusercontent.com/Madai-v/ForwardWidgets/main/icon/icon.png",
   "widgets": [
     {
       "id": "douban",
