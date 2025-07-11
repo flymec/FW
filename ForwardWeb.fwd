@@ -1,7 +1,7 @@
 {
   "title": "flyme⚡️",
   "description": "自用模块聚合",
-  "icon": "https://raw.githubusercontent.com/flymec/FW/main/icon/icon2.PNG",
+  "icon": "https://raw.githubusercontent.com/flymec/FW/main/icon/icon1.PNG",
   "widgets": [
 	  {
       "id": "Pornhub",
