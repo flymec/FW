@@ -1,10 +1,10 @@
 var WidgetMetadata = {
-  id: "ti.bemarkt.vod.maccms",
+  id: "wuming.VOD",
   title: "VOD",
-  description: "获取 VOD 影视数据",
-  author: "Ti",
-  site: "https://github.com/bemarkt/scripts/tree/master/provider/Forward",
-  version: "1.1.0",
+  description: "根据Keyword,用于VOD",
+  author: "无名",
+  site: "https://raw.githubusercontent.com/xbzl/Forward/refs/heads/main/Widgets/README.md",
+  version: "1.0.0",
   requiredVersion: "0.0.1",
   modules: [
     {
@@ -24,10 +24,6 @@ var WidgetMetadata = {
             {
               title: "极速资源",
               value: "https://jszyapi.com/api.php/provide/vod/",
-            },
-            {
-              title: "黑木耳",
-              value: "https://heimuer.tv/api.php/provide/vod/",
             },
             {
               title: "木耳资源",
@@ -133,7 +129,30 @@ var WidgetMetadata = {
         },
       ],
     },
-   {
+    // 新增聚合搜索模块
+    {
+      title: "聚合搜索",
+      description: "在多个视频源上同时搜索电影名称",
+      requiresWebView: false,
+      functionName: "multiSourceSearch",
+      params: [
+        {
+          name: "wd",
+          title: "关键词",
+          type: "input",
+          description: "搜索的影视名称",
+          value: "",
+        },
+        {
+          name: "pg",
+          title: "页码",
+          type: "page",
+          value: "1",
+        }
+      ]
+    }
+  ],
+  search: {
     title: "搜索视频",
     functionName: "searchVod",
     params: [
@@ -398,11 +417,12 @@ function parsePlayUrlData(vodPlayUrl, mainTitle = "播放") {
 /**
  * 解析接口视频数据
  * @param {object} apiVideoData - 从API获取的单个视频对象
+ * @param {string} currentApiUrl - 当前API源的URL
  * @returns {object} Forward VideoItem格式的对象
  */
-function parseItemFromListApi(apiVideoData) {
+function parseItemFromListApi(apiVideoData, currentApiUrl) {
   const numericalVodId = String(apiVideoData.vod_id);
-  const detailPageApiUrl = buildRequestUrl(apiBaseUrl, {
+  const detailPageApiUrl = buildRequestUrl(currentApiUrl, {
     ac: "detail",
     ids: numericalVodId,
   });
@@ -443,6 +463,7 @@ function parseItemFromListApi(apiVideoData) {
       apiVideoData.vod_remarks ||
       apiVideoData.vod_content,
     link: detailPageApiUrl,
+    source: currentApiUrl, // 添加来源信息
   };
 }
 
@@ -490,7 +511,7 @@ async function getVodList(params = {}) {
 
     if (data.list && Array.isArray(data.list)) {
       const resultList = data.list.map((apiItem) =>
-        parseItemFromListApi(apiItem)
+        parseItemFromListApi(apiItem, apiBaseUrl)
       );
       console.log(`getVodList: 成功解析 ${resultList.length} 个视频项目。`);
       return resultList;
@@ -553,7 +574,7 @@ async function searchVod(params = {}) {
 
     if (data.list && Array.isArray(data.list)) {
       const resultList = data.list.map((apiItem) =>
-        parseItemFromListApi(apiItem)
+        parseItemFromListApi(apiItem, apiBaseUrl)
       );
       console.log(`searchVod: 成功解析 ${resultList.length} 个搜索结果。`);
       return resultList;
@@ -700,5 +721,128 @@ async function loadDetail(detailPageApiUrl) {
       error.stack
     );
     throw new Error(`加载视频详情失败: ${error.message}.`);
+  }
+}
+
+// ====================== 新增聚合搜索功能 ====================== //
+/**
+ * 聚合搜索 - 在多个视频源上同时搜索电影名称
+ * @param {Object} params - 参数对象
+ * @param {string} params.wd - 搜索关键词
+ * @param {number} params.pg - 页码
+ * @returns {Array} 搜索结果列表
+ */
+async function multiSourceSearch(params = {}) {
+  const keyword = params.wd;
+  const page = params.pg || 1;
+  
+  if (!keyword || keyword.trim() === "") {
+    throw new Error("搜索关键词不能为空");
+  }
+  
+  console.log(`multiSourceSearch: 开始聚合搜索 "${keyword}", 页码: ${page}`);
+  
+  // 定义多个视频源API地址
+  const videoSources = [
+    "https://jszyapi.com/api.php/provide/vod/",
+    "https://json02.heimuer.xyz/api.php/provide/vod/",
+    "https://gctf.tfdh.top/api.php/provide/vod/",
+    "https://mozhuazy.com/api.php/provide/vod/",
+    "https://api.wujinapi.me/api.php/provide/vod/",
+    "https://jyzyapi.com/provide/vod/from/jinyingm3u8/at/json",
+    "https://api.wwzy.tv/api.php/provide/vod/",
+    "https://cj.lziapi.com/api.php/provide/vod/at/json/",
+    "http://zy.xiaomaomi.cc/api.php/provide/vod/",
+    "https://collect.wolongzy.cc/api.php/provide/vod/",
+    "https://www.wyvod.com/api.php/provide/vod/",
+    "https://cj.rycjapi.com/api.php/provide/vod/at/json/",
+    "https://oknnews.com/api.php/provide/vod/",
+    "https://api.souavzy.vip/api.php/provide/vod/",
+    "https://apiyutu.com/api.php/provide/vod/",
+    "https://caiji.dbzy.tv/api.php/provide/vod/at/josn/",
+    "https://alivod.com/api.php/provide/vod/",
+    "https://apilsbzy1.com/api.php/provide/vod",
+    "http://60.204.225.89:1122/api.php/provide/vod/"
+  ];
+  
+  // 用于存储所有搜索结果
+  let allResults = [];
+  
+  // 创建搜索任务数组
+  const searchTasks = videoSources.map(source => 
+    searchOnSingleSource(source, keyword, page)
+    .catch(error => {
+      console.warn(`multiSourceSearch: 源 ${source} 搜索失败: ${error.message}`);
+      return []; // 失败时返回空数组
+    })
+  );
+  
+  try {
+    // 并行执行所有搜索任务
+    const results = await Promise.all(searchTasks);
+    
+    // 合并所有结果
+    results.forEach(sourceResults => {
+      allResults = allResults.concat(sourceResults);
+    });
+    
+    console.log(`multiSourceSearch: 共从 ${results.length} 个源获取到 ${allResults.length} 个结果`);
+    
+    // 去重处理 (根据视频标题和来源)
+    const uniqueResults = [];
+    const seenItems = new Set();
+    
+    allResults.forEach(item => {
+      const uniqueKey = `${item.title}_${item.source}`;
+      if (!seenItems.has(uniqueKey)) {
+        seenItems.add(uniqueKey);
+        uniqueResults.push(item);
+      }
+    });
+    
+    console.log(`multiSourceSearch: 去重后剩余 ${uniqueResults.length} 个结果`);
+    
+    return uniqueResults;
+  } catch (error) {
+    console.error("multiSourceSearch: 聚合搜索失败:", error.message, error.stack);
+    throw new Error(`聚合搜索失败: ${error.message}`);
+  }
+}
+
+/**
+ * 在单个视频源上搜索
+ * @param {string} apiUrl - API地址
+ * @param {string} keyword - 搜索关键词
+ * @param {number} page - 页码
+ * @returns {Array} 搜索结果
+ */
+async function searchOnSingleSource(apiUrl, keyword, page) {
+  const queryParams = {
+    ac: "videolist",
+    wd: keyword,
+    pg: page
+  };
+  
+  const requestUrl = buildRequestUrl(apiUrl, queryParams);
+  console.log(`searchOnSingleSource: 请求 ${requestUrl}`);
+  
+  try {
+    const response = await Widget.http.get(requestUrl);
+    const data = response.data;
+    
+    if (!data || data.code !== 1 || !Array.isArray(data.list)) {
+      console.warn(`searchOnSingleSource: 源 ${apiUrl} 返回无效数据`);
+      return [];
+    }
+    
+    // 解析结果并添加来源信息
+    return data.list.map(item => {
+      const parsedItem = parseItemFromListApi(item, apiUrl);
+      parsedItem.source = apiUrl; // 添加来源信息
+      return parsedItem;
+    });
+  } catch (error) {
+    console.warn(`searchOnSingleSource: 源 ${apiUrl} 搜索失败: ${error.message}`);
+    return [];
   }
 }
