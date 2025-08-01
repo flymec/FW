@@ -133,8 +133,7 @@ var WidgetMetadata = {
         },
       ],
     },
-  ],
-  search: {
+   {
     title: "搜索视频",
     functionName: "searchVod",
     params: [
