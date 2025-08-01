@@ -83,6 +83,15 @@
       "version": "1.2.6",
       "author": "阿米诺斯",
       "url": "https://raw.githubusercontent.com/flymec/FW/refs/heads/main/Widgets/ForwardWidgets.js"
+    },
+   {
+      "id": "ti.bemarkt.vod.maccms",
+      "title": "VOD",
+      "description": "获取 VOD 影视数据",
+      "requiredVersion": "0.0.1",
+      "version": "1.1.0",
+      "author": "Ti",
+      "url": "https://raw.githubusercontent.com/flymec/FW/refs/heads/main/Widgets/vod.js"
     }
   ]
 }
