@@ -1,0 +1,83 @@
+/*
+ * 独立版 Netflav 小部件
+ * 提供 搜索 / 番号 / 女优 三个模块
+ */
+
+WidgetMetadata = {
+  id: "netflav",
+  title: "Netflav",
+  description: "获取 Netflav 视频",
+  author: "chatgpt",
+  site: "https://netflav.com",
+  version: "1.0.0",
+  requiredVersion: "0.0.1",
+  detailCacheDuration: 60,
+  modules: [
+    {
+      title: "Netflav 搜索",
+      functionName: "searchNetflav",
+      params: [
+        { name: "keyword", type: "input", description: "关键词/番号/女优名" },
+        { name: "page", type: "page", value: "1" },
+        { name: "sort", type: "input", description: "排序: relevance/latest/popular" }
+      ]
+    },
+    {
+      title: "Netflav 番号",
+      functionName: "searchNetflav",
+      params: [
+        { name: "keyword", type: "input", description: "番号，如 ABP-123" },
+        { name: "page", type: "page", value: "1" }
+      ]
+    },
+    {
+      title: "Netflav 女优",
+      functionName: "searchNetflav",
+      params: [
+        { name: "keyword", type: "input", description: "女优名" },
+        { name: "page", type: "page", value: "1" }
+      ]
+    }
+  ]
+};
+
+async function searchNetflav(params = {}) {
+  const kw = encodeURIComponent(params.keyword || "");
+  let url = `https://netflav.com/search?keyword=${kw}`;
+  if (params.page) url += `&page=${params.page}`;
+  if (params.sort) url += `&sort=${params.sort}`;
+  return await loadPage({ ...params, url });
+}
+
+async function loadPage(params = {}) {
+  const html = await getHtml(params.url);
+  return parseNetflav(html);
+}
+
+async function getHtml(url) {
+  const res = await Widget.http.get(url, { headers: { "User-Agent": "Mozilla/5.0" } });
+  if (!res || !res.data) return "";
+  return res.data;
+}
+
+function parseNetflav(html) {
+  const $ = Widget.html.load(html);
+  const items = [];
+  $("a[href*='/video/']").each((_, el) => {
+    const $el = $(el);
+    const href = $el.attr("href") || "";
+    if (!href) return;
+    const url = href.startsWith("http") ? href : `https://netflav.com${href}`;
+    const img = $el.find("img").attr("data-src") || $el.find("img").attr("src") || "";
+    const title = $el.find("img").attr("alt") || $el.text().trim();
+    if (title && url) {
+      items.push({ title, link: url, backdropPath: img });
+    }
+  });
+  return [{ title: "Netflav 列表", childItems: items }];
+}
+
+async function loadDetail(link) {
+  const html = await getHtml(link);
+  return { id: link, type: "detail", videoUrl: "", mediaType: "movie" };
+}
