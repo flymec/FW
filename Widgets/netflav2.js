@@ -1,10 +1,10 @@
 WidgetMetadata = {
   id: "netflav",
-  title: "Netflav",
-  description: "获取 Netflav 视频",
+  title: "Netflav Pro",
+  description: "Netflav 视频获取器 (支持cookies)",
   author: "flyme",
   site: "https://github.com/quantumultxx/FW-Widgets",
-  version: "1.1.0",
+  version: "1.2.0",
   requiredVersion: "0.0.1",
   detailCacheDuration: 60,
   modules: [
@@ -118,8 +118,85 @@ WidgetMetadata = {
   ],
 };
 
-// 修正后的视频API
+// 全局 cookie 存储
+let NETFLAV_COOKIES = "";
 const VIDEO_API = "https://netflav.com/api/video";
+
+// 获取并更新 cookies
+async function getCookies() {
+  if (NETFLAV_COOKIES) return NETFLAV_COOKIES;
+  
+  try {
+    const response = await Widget.http.get("https://netflav.com", {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36",
+      },
+      redirect: "follow"
+    });
+    
+    if (response.headers && response.headers["Set-Cookie"]) {
+      NETFLAV_COOKIES = response.headers["Set-Cookie"].join("; ");
+      console.log("获取到新的Cookies:", NETFLAV_COOKIES.substring(0, 50) + "...");
+    }
+    
+    return NETFLAV_COOKIES || "";
+  } catch (error) {
+    console.error("获取Cookies失败:", error.message);
+    return "";
+  }
+}
+
+// Cloudflare绕过检测
+function isCloudflareChallenge(html) {
+  return html.includes("Cloudflare") || 
+         html.includes("challenge-form") || 
+         html.includes("cf-browser-verification");
+}
+
+// 带cookies和重试机制的请求
+async function fetchWithCookies(url, options = {}) {
+  const maxRetries = 2;
+  let retryCount = 0;
+  
+  while (retryCount <= maxRetries) {
+    try {
+      // 获取最新cookies
+      const cookies = await getCookies();
+      
+      // 设置请求头
+      const headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36",
+        "Referer": "https://netflav.com/",
+        "Cookie": cookies,
+        ...(options.headers || {})
+      };
+      
+      // 发送请求
+      const response = await Widget.http.get(url, {
+        headers,
+        redirect: "follow",
+        ...options
+      });
+      
+      // 检查Cloudflare挑战
+      if (response.data && isCloudflareChallenge(response.data)) {
+        console.warn("检测到Cloudflare挑战，重置cookies并重试");
+        NETFLAV_COOKIES = ""; // 重置cookies
+        retryCount++;
+        continue;
+      }
+      
+      return response;
+    } catch (error) {
+      console.error(`请求失败 (尝试 ${retryCount + 1}/${maxRetries}):`, error.message);
+      retryCount++;
+      
+      if (retryCount > maxRetries) {
+        throw error;
+      }
+    }
+  }
+}
 
 async function search(params = {}) {
   const keyword = encodeURIComponent(params.keyword || "");
@@ -153,13 +230,8 @@ async function loadSeries(params = {}) {
 
 async function loadPage(url) {
   try {
-    const response = await Widget.http.get(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Referer": "https://netflav.com/",
-      },
-    });
-
+    const response = await fetchWithCookies(url);
+    
     if (!response.data) {
       console.error("加载页面失败，无数据返回");
       return [];
@@ -176,15 +248,14 @@ async function parseHtml(htmlContent) {
   const $ = Widget.html.load(htmlContent);
   const items = [];
   
-  // 修正选择器 - 匹配Netflav当前结构
-  $('.grid .item').each((index, element) => {
+  // 支持两种页面布局
+  $('.grid .item, .video-item').each((index, element) => {
     const $el = $(element);
-    const title = $el.find('.title').text().trim();
+    const title = $el.find('.title, .video-title').text().trim();
     const link = $el.find('a').attr('href');
     const cover = $el.find('img').attr('src');
-    const duration = $el.find('.duration').text().trim();
+    const duration = $el.find('.duration, .video-duration').text().trim();
     
-    // 确保链接是有效的视频链接
     if (link && link.includes("/video?")) {
       const videoId = new URLSearchParams(link.split('?')[1]).get('id');
       
@@ -206,7 +277,7 @@ async function parseHtml(htmlContent) {
   return items;
 }
 
-// 完全重构的视频详情加载
+// 视频详情加载
 async function loadDetail(link) {
   try {
     // 从链接中提取视频ID
@@ -218,14 +289,13 @@ async function loadDetail(link) {
     
     // 构建API请求
     const apiUrl = `${VIDEO_API}?id=${videoId}`;
-    console.log("请求视频API:", apiUrl);
     
-    const response = await Widget.http.get(apiUrl, {
+    // 发送带cookies的API请求
+    const response = await fetchWithCookies(apiUrl, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Referer": "https://netflav.com/",
-        "X-Requested-With": "XMLHttpRequest"
-      },
+        "X-Requested-With": "XMLHttpRequest",
+        "Accept": "application/json"
+      }
     });
     
     // 解析API响应
@@ -237,10 +307,14 @@ async function loadDetail(link) {
       return null;
     }
     
+    // 检查API响应
     if (!data || !data.src) {
       console.error("API返回无效数据:", data);
       return null;
     }
+    
+    // 获取最新cookies
+    const cookies = await getCookies();
     
     // 构建播放项
     return {
@@ -250,8 +324,9 @@ async function loadDetail(link) {
       mediaType: "movie",
       customHeaders: {
         "Referer": "https://netflav.com/",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Origin": "https://netflav.com"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36",
+        "Origin": "https://netflav.com",
+        "Cookie": cookies
       }
     };
   } catch (error) {
