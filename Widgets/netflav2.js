@@ -1,6 +1,6 @@
 /*
- * 独立版 Netflav 小部件
- * 提供 搜索 / 番号 / 女优 三个模块
+ * 独立版 Netflav 小部件（基于原 Jable 文件结构改写）
+ * 提供 搜索 / 热门 / 最新 / 女优 / 番号 等模块
  */
 
 WidgetMetadata = {
@@ -23,10 +23,18 @@ WidgetMetadata = {
       ]
     },
     {
-      title: "Netflav 番号",
-      functionName: "searchNetflav",
+      title: "Netflav 热门",
+      functionName: "loadPage",
       params: [
-        { name: "keyword", type: "input", description: "番号，如 ABP-123" },
+        { name: "url", type: "constant", value: "https://netflav.com/search?sort=popular" },
+        { name: "page", type: "page", value: "1" }
+      ]
+    },
+    {
+      title: "Netflav 最新",
+      functionName: "loadPage",
+      params: [
+        { name: "url", type: "constant", value: "https://netflav.com/search?sort=latest" },
         { name: "page", type: "page", value: "1" }
       ]
     },
@@ -35,6 +43,14 @@ WidgetMetadata = {
       functionName: "searchNetflav",
       params: [
         { name: "keyword", type: "input", description: "女优名" },
+        { name: "page", type: "page", value: "1" }
+      ]
+    },
+    {
+      title: "Netflav 番号",
+      functionName: "searchNetflav",
+      params: [
+        { name: "keyword", type: "input", description: "番号，如 ABP-123" },
         { name: "page", type: "page", value: "1" }
       ]
     }
@@ -50,12 +66,18 @@ async function searchNetflav(params = {}) {
 }
 
 async function loadPage(params = {}) {
-  const html = await getHtml(params.url);
+  let url = params.url || "";
+  if (params.page && !url.includes("page=")) {
+    url += (url.includes("?") ? "&" : "?") + `page=${params.page}`;
+  }
+  const html = await getHtml(url);
   return parseNetflav(html);
 }
 
 async function getHtml(url) {
-  const res = await Widget.http.get(url, { headers: { "User-Agent": "Mozilla/5.0" } });
+  const res = await Widget.http.get(url, {
+    headers: { "User-Agent": "Mozilla/5.0" }
+  });
   if (!res || !res.data) return "";
   return res.data;
 }
