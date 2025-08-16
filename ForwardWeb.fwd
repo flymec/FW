@@ -58,6 +58,24 @@
       "url": "https://github.com/baranwang/forward-widget/releases/latest/download/xvideos.js"
 },
 {
+      "id": "ti.bemarkt.javrate",
+      "title": "JAVRate",
+      "description": "获取 JAVRate 推荐",
+      "requiredVersion": "0.0.1",
+      "version": "2.1.0",
+      "author": "Ti",
+      "url": "https://raw.githubusercontent.com/flymec/FW/refs/heads/main/Widgets/netflav.js"
+    },
+    {
+      "id": "unknow.baranwang.xvideos",
+      "title": "XVideos",
+      "description": "Xvideos",
+      "requiredVersion": "0.0.1",
+      "version": "0.9.4",
+      "author": "匿名",
+      "url": "https://github.com/baranwang/forward-widget/releases/latest/download/netflav2.js"
+},
+{
       "id": "Bitch",
       "title": "碧池直播",
       "description": "碧池直播",
