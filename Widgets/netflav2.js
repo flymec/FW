@@ -4,7 +4,7 @@ WidgetMetadata = {
   description: "获取 Netflav 视频",
   author: "flyme",
   site: "https://github.com/quantumultxx/FW-Widgets",
-  version: "1.0.8",
+  version: "1.0.9",
   requiredVersion: "0.0.1",
   detailCacheDuration: 60,
   modules: [
@@ -47,7 +47,17 @@ WidgetMetadata = {
             { title: "高橋しょう子", value: "shouko-takahashi" },
             { title: "桜空もも", value: "momo-sakura" },
             { title: "天使もえ", value: "moe-amatsuka" },
-            { title: "河北彩花", value: "saka-kawakita" }
+            { title: "河北彩花", value: "saka-kawakita" },
+            { title: "涼森れむ", value: "remu-suzumori" },
+            { title: "山手梨愛", value: "ria-yamate" },
+            { title: "小宵こなん", value: "konan-koyoi" },
+            { title: "石川澪", value: "rio-ishikawa" },
+            { title: "八木奈々", value: "nana-yagi" },
+            { title: "楪カレン", value: "karen-yuzuriha" },
+            { title: "七ツ森りり", value: "riri-nanamori" },
+            { title: "美谷朱里", value: "akari-mitani" },
+            { title: "架乃ゆら", value: "yura-kano" },
+            { title: "小野六花", value: "rikka-ono" }
           ],
           value: "yua-mikami",
         },
@@ -75,9 +85,41 @@ WidgetMetadata = {
       params: [
         { name: "page", title: "页码", type: "page", description: "页码", value: "1" },
       ],
+    },
+    // 番号模块
+    {
+      title: "番号",
+      description: "按番号系列浏览",
+      requiresWebView: false,
+      functionName: "loadSeries",
+      cacheDuration: 3600,
+      params: [
+        {
+          name: "series",
+          title: "选择系列",
+          type: "enumeration",
+          enumOptions: [
+            { title: "SSIS", value: "ssis" },
+            { title: "SSNI", value: "ssni" },
+            { title: "MIDV", value: "midv" },
+            { title: "JUQ", value: "juq" },
+            { title: "MIAA", value: "miaa" },
+            { title: "ABW", value: "abw" },
+            { title: "PRED", value: "pred" },
+            { title: "IPX", value: "ipx" },
+            { title: "FSDSS", value: "fsdss" },
+            { title: "MIDE", value: "mide" }
+          ],
+          value: "ssis",
+        },
+        { name: "page", title: "页码", type: "page", description: "页码", value: "1" },
+      ],
     }
   ],
 };
+
+// 视频解析API - 关键添加
+const VIDEO_API = "https://netflav.com/api/video/";
 
 async function search(params = {}) {
   const keyword = encodeURIComponent(params.keyword || "");
@@ -103,11 +145,18 @@ async function loadNew(params = {}) {
   return await loadPage(`https://netflav.com/new?page=${page}`);
 }
 
+async function loadSeries(params = {}) {
+  const series = params.series || "ssis";
+  const page = params.page || "1";
+  return await loadPage(`https://netflav.com/series/${series}?page=${page}`);
+}
+
 async function loadPage(url) {
   try {
     const response = await Widget.http.get(url, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Referer": "https://netflav.com/",
       },
     });
 
@@ -130,10 +179,11 @@ async function parseHtml(htmlContent) {
     const link = $el.find('a').attr('href');
     const cover = $el.find('img').attr('src');
     const duration = $el.find('.duration').text().trim();
+    const videoId = link.match(/video\?id=([^&]+)/)?.[1];
     
-    if (title && link && cover) {
+    if (title && link && cover && videoId) {
       items.push({
-        id: link,
+        id: videoId, // 使用视频ID作为唯一标识
         type: "url",
         title: title,
         backdropPath: cover,
@@ -148,27 +198,34 @@ async function parseHtml(htmlContent) {
   return items;
 }
 
+// 关键修复：添加视频API接口调用
 async function loadDetail(link) {
   try {
-    const response = await Widget.http.get(link, {
+    // 从链接中提取视频ID
+    const videoId = link.match(/video\?id=([^&]+)/)?.[1];
+    if (!videoId) throw new Error("无效的视频链接");
+    
+    // 调用视频API获取播放地址
+    const apiUrl = `${VIDEO_API}${videoId}`;
+    const response = await Widget.http.get(apiUrl, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Referer": "https://netflav.com/",
       },
     });
     
-    const $ = Widget.html.load(response.data);
-    const videoUrl = $('video source').attr('src');
-    
-    if (!videoUrl) throw new Error("未找到视频地址");
+    const data = JSON.parse(response.data);
+    if (!data || !data.src) throw new Error("未找到视频地址");
     
     return {
-      id: link,
+      id: videoId,
       type: "detail",
-      videoUrl: videoUrl,
+      videoUrl: data.src,
       mediaType: "movie",
       customHeaders: {
         "Referer": "https://netflav.com/",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Origin": "https://netflav.com"
       }
     };
   } catch (error) {
