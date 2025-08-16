@@ -4,11 +4,11 @@ WidgetMetadata = {
   description: "获取 Netflav 视频",
   author: "flyme",
   site: "https://github.com/quantumultxx/FW-Widgets",
-  version: "1.0.9",
+  version: "1.1.0",
   requiredVersion: "0.0.1",
   detailCacheDuration: 60,
   modules: [
-    // 搜索模块（支持番号搜索）
+    // 搜索模块
     {
       title: "搜索",
       description: "关键词或番号搜索",
@@ -118,8 +118,8 @@ WidgetMetadata = {
   ],
 };
 
-// 视频解析API - 关键添加
-const VIDEO_API = "https://netflav.com/api/video/";
+// 修正后的视频API
+const VIDEO_API = "https://netflav.com/api/video";
 
 async function search(params = {}) {
   const keyword = encodeURIComponent(params.keyword || "");
@@ -160,7 +160,10 @@ async function loadPage(url) {
       },
     });
 
-    if (!response.data) throw new Error("无有效数据");
+    if (!response.data) {
+      console.error("加载页面失败，无数据返回");
+      return [];
+    }
     
     return parseHtml(response.data);
   } catch (error) {
@@ -173,50 +176,73 @@ async function parseHtml(htmlContent) {
   const $ = Widget.html.load(htmlContent);
   const items = [];
   
-  $('.grid-item').each((index, element) => {
+  // 修正选择器 - 匹配Netflav当前结构
+  $('.grid .item').each((index, element) => {
     const $el = $(element);
-    const title = $el.find('.video-title').text().trim();
+    const title = $el.find('.title').text().trim();
     const link = $el.find('a').attr('href');
     const cover = $el.find('img').attr('src');
     const duration = $el.find('.duration').text().trim();
-    const videoId = link.match(/video\?id=([^&]+)/)?.[1];
     
-    if (title && link && cover && videoId) {
-      items.push({
-        id: videoId, // 使用视频ID作为唯一标识
-        type: "url",
-        title: title,
-        backdropPath: cover,
-        link: link,
-        mediaType: "movie",
-        durationText: duration,
-        description: duration
-      });
+    // 确保链接是有效的视频链接
+    if (link && link.includes("/video?")) {
+      const videoId = new URLSearchParams(link.split('?')[1]).get('id');
+      
+      if (title && cover && videoId) {
+        items.push({
+          id: videoId,
+          type: "url",
+          title: title,
+          backdropPath: cover,
+          link: link,
+          mediaType: "movie",
+          durationText: duration,
+          description: duration
+        });
+      }
     }
   });
   
   return items;
 }
 
-// 关键修复：添加视频API接口调用
+// 完全重构的视频详情加载
 async function loadDetail(link) {
   try {
     // 从链接中提取视频ID
-    const videoId = link.match(/video\?id=([^&]+)/)?.[1];
-    if (!videoId) throw new Error("无效的视频链接");
+    const videoId = new URLSearchParams(link.split('?')[1]).get('id');
+    if (!videoId) {
+      console.error("无法从链接中提取视频ID:", link);
+      return null;
+    }
     
-    // 调用视频API获取播放地址
-    const apiUrl = `${VIDEO_API}${videoId}`;
+    // 构建API请求
+    const apiUrl = `${VIDEO_API}?id=${videoId}`;
+    console.log("请求视频API:", apiUrl);
+    
     const response = await Widget.http.get(apiUrl, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
         "Referer": "https://netflav.com/",
+        "X-Requested-With": "XMLHttpRequest"
       },
     });
     
-    const data = JSON.parse(response.data);
-    if (!data || !data.src) throw new Error("未找到视频地址");
+    // 解析API响应
+    let data;
+    try {
+      data = JSON.parse(response.data);
+    } catch (e) {
+      console.error("解析API响应失败:", e);
+      return null;
+    }
     
+    if (!data || !data.src) {
+      console.error("API返回无效数据:", data);
+      return null;
+    }
+    
+    // 构建播放项
     return {
       id: videoId,
       type: "detail",
