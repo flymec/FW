@@ -48,24 +48,6 @@
       "author": "Ti",
       "url": "https://raw.githubusercontent.com/flymec/FW/refs/heads/main/Widgets/javrate.js"
     },
-{
-      "id": "ti.bemarkt.javrate",
-      "title": "JAVRate",
-      "description": "获取 JAVRate 推荐",
-      "requiredVersion": "0.0.1",
-      "version": "2.1.0",
-      "author": "Ti",
-      "url": "https://raw.githubusercontent.com/flymec/FW/refs/heads/main/Widgets/javrate2.js"
-    },
-{
-      "id": "ti.bemarkt.javrate",
-      "title": "JAVRate",
-      "description": "获取 JAVRate 推荐",
-      "requiredVersion": "0.0.1",
-      "version": "2.1.0",
-      "author": "Ti",
-      "url": "https://raw.githubusercontent.com/flymec/FW/refs/heads/main/Widgets/javrate3.js"
-    },
     {
       "id": "unknow.baranwang.xvideos",
       "title": "XVideos",
