@@ -2,7 +2,7 @@ var WidgetMetadata = {
     id: "missav",
     title: "MissAV",
     description: "\u83b7\u53d6 MissAV \u63a8\u8350",
-    author: "���曎�𩐿�𩐿�𤧣�𣋠�𢵧�㯴��",
+    author: "𝓑𝓾𝓽𝓽𝓮𝓻𝓯𝓵𝔂",
     site: "https://widgets-xd.vercel.app",
     version: "1.0.0",
     requiredVersion: "0.0.2",
@@ -190,7 +190,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u5f71\u7247\u8d28\u91cf\u7c7b",
-            description: "\u5f71\u7247\u8d28\u91cf\u7c7b - 12\u4e2a\u7c7b\u578b嚗�748,863\u90e8\u5f71\u7247",
+            description: "\u5f71\u7247\u8d28\u91cf\u7c7b - 12\u4e2a\u7c7b\u578b，748,863\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -236,7 +236,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u89d2\u8272\u4e0e\u8eab\u4efd",
-            description: "\u89d2\u8272\u4e0e\u8eab\u4efd - 23\u4e2a\u7c7b\u578b嚗�609,543\u90e8\u5f71\u7247",
+            description: "\u89d2\u8272\u4e0e\u8eab\u4efd - 23\u4e2a\u7c7b\u578b，609,543\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -289,7 +289,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u6027\u884c\u4e3a\u7c7b\u578b",
-            description: "\u6027\u884c\u4e3a\u7c7b\u578b - 19\u4e2a\u7c7b\u578b嚗�759,620\u90e8\u5f71\u7247",
+            description: "\u6027\u884c\u4e3a\u7c7b\u578b - 19\u4e2a\u7c7b\u578b，759,620\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -341,7 +341,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u60c5\u8282\u4e0e\u4e3b\u9898",
-            description: "\u60c5\u8282\u4e0e\u4e3b\u9898 - 15\u4e2a\u7c7b\u578b嚗�363,926\u90e8\u5f71\u7247",
+            description: "\u60c5\u8282\u4e0e\u4e3b\u9898 - 15\u4e2a\u7c7b\u578b，363,926\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -387,7 +387,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u7279\u6b8a\u73a9\u6cd5\u7c7b",
-            description: "\u7279\u6b8a\u73a9\u6cd5 - 9\u4e2a\u7c7b\u578b嚗�85,102\u90e8\u5f71\u7247",
+            description: "\u7279\u6b8a\u73a9\u6cd5 - 9\u4e2a\u7c7b\u578b，85,102\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -428,7 +428,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u8eab\u6750\u7279\u5f81\u7c7b",
-            description: "\u8eab\u6750\u7279\u5f81 - 14\u4e2a\u7c7b\u578b嚗�234,821\u90e8\u5f71\u7247",
+            description: "\u8eab\u6750\u7279\u5f81 - 14\u4e2a\u7c7b\u578b，234,821\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -445,7 +445,7 @@ var WidgetMetadata = {
                         { title: "D\u7f69\u676f (79\u90e8)", value: "https://missav.ai/cn/genres/D%E7%BD%A9%E6%9D%AF" },
                         { title: "\u80cc\u90e8 (73\u90e8)", value: "https://missav.ai/dm355/cn/genres/%E8%83%8C%E9%83%A8" },
                         { title: "\u7f8e\u4e3d\u7684\u5c41\u80a1 (60\u90e8)", value: "https://missav.ai/cn/genres/%E7%BE%8E%E4%B8%BD%E7%9A%84%E5%B1%81%E8%82%A1" },
-                        { title: "E\u7f69\u676f\u4ee5\u4e0a\u7684Judai嚗Ěu9752\u5c11\u5e74嚗� (55\u90e8)", value: "https://missav.ai/cn/genres/E%E7%BD%A9%E6%9D%AF%E4%BB%A5%E4%B8%8A%E7%9A%84Judai%EF%BC%88%E9%9D%92%E5%B0%91%E5%B9%B4%EF%BC%89" },
+                        { title: "E\u7f69\u676f\u4ee5\u4e0a\u7684Judai（\u9752\u5c11\u5e74） (55\u90e8)", value: "https://missav.ai/cn/genres/E%E7%BD%A9%E6%9D%AF%E4%BB%A5%E4%B8%8A%E7%9A%84Judai%EF%BC%88%E9%9D%92%E5%B0%91%E5%B9%B4%EF%BC%89" },
                         { title: "\u751c\u5c41\u80a1 (54\u90e8)", value: "https://missav.ai/cn/genres/%E7%94%9C%E5%B1%81%E8%82%A1" },
                         { title: "\u7f8e\u5c3b (46\u90e8)", value: "https://missav.ai/cn/genres/%E7%BE%8E%E5%B0%BB" },
                         { title: "\u6027\u611f\u7684\u817f (42\u90e8)", value: "https://missav.ai/cn/genres/%E6%80%A7%E6%84%9F%E7%9A%84%E8%85%BF" },
@@ -476,7 +476,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u804c\u4e1a\u89d2\u8272\u7c7b",
-            description: "\u804c\u4e1a\u89d2\u8272 - 8\u4e2a\u7c7b\u578b嚗�372\u90e8\u5f71\u7247",
+            description: "\u804c\u4e1a\u89d2\u8272 - 8\u4e2a\u7c7b\u578b，372\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -518,7 +518,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u62cd\u6444\u65b9\u5f0f\u7c7b",
-            description: "\u62cd\u6444\u65b9\u5f0f - 6\u4e2a\u7c7b\u578b嚗�78,894\u90e8\u5f71\u7247",
+            description: "\u62cd\u6444\u65b9\u5f0f - 6\u4e2a\u7c7b\u578b，78,894\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -558,7 +558,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u65f6\u957f\u5408\u96c6\u7c7b",
-            description: "\u65f6\u957f\u4e0e\u5408\u96c6 - 3\u4e2a\u7c7b\u578b嚗�73,839\u90e8\u5f71\u7247",
+            description: "\u65f6\u957f\u4e0e\u5408\u96c6 - 3\u4e2a\u7c7b\u578b，73,839\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -595,7 +595,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u670d\u88c5\u9020\u578b\u7c7b",
-            description: "\u670d\u88c5\u4e0e\u9020\u578b - 13\u4e2a\u7c7b\u578b嚗�657\u90e8\u5f71\u7247",
+            description: "\u670d\u88c5\u4e0e\u9020\u578b - 13\u4e2a\u7c7b\u578b，657\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -640,7 +640,7 @@ var WidgetMetadata = {
         },
         {
             title: "\u7279\u6b8a\u9898\u6750\u7c7b",
-            description: "\u7279\u6b8a\u9898\u6750 - 25\u4e2a\u7c7b\u578b嚗�901\u90e8\u5f71\u7247",
+            description: "\u7279\u6b8a\u9898\u6750 - 25\u4e2a\u7c7b\u578b，901\u90e8\u5f71\u7247",
             requiresWebView: false,
             functionName: "loadPage",
             cacheDuration: 1800,
@@ -847,23 +847,23 @@ async function fetchVideoList(url) {
         return parseVideoList(response.data);
         
     } catch (error) {
-        return [createPlaceholderItem("\u8bbf\u95ee\u5931\u8d25嚗𨜏u53ef\u80fd\u5df2\u88ab\u98ce\u63a7")];
+        return [createPlaceholderItem("\u8bbf\u95ee\u5931\u8d25，\u53ef\u80fd\u5df2\u88ab\u98ce\u63a7")];
     }
 }
 
-function createPlaceholderItem(message = "\u5df2\u88ab\u98ce\u63a7嚗𨜏u8bf7\u7a0d\u540e\u91cd\u8bd5") {
+function createPlaceholderItem(message = "\u5df2\u88ab\u98ce\u63a7，\u8bf7\u7a0d\u540e\u91cd\u8bd5") {
     return {
         id: "content-placeholder",
         type: "placeholder",
-        title: "�麱 " + message,
+        title: "🚫 " + message,
         backdropPath: "https://via.placeholder.com/400x225/FF6B6B/FFFFFF?text=%E5%B7%B2%E8%A2%AB%E9%A3%8E%E6%8E%A7",
         mediaType: "placeholder",
         duration: 0,
-        durationText: "�𩤃� \u8bbf\u95ee\u53d7\u9650",
+        durationText: "⚠️ \u8bbf\u95ee\u53d7\u9650",
         previewUrl: "",
         videoUrl: "",
         link: "",
-        description: "�� " + message + "\n\n�働 \u53ef\u80fd\u7684\u89e3\u51b3\u65b9\u6848嚗䨵n�� \u7b49\u5f85\u4e00\u6bb5\u65f6\u95f4\u540e\u91cd\u65b0\u5c1d\u8bd5\n�� \u68c0\u67e5\u7f51\u7edc\u8fde\u63a5\n�� \u66f4\u6362\u7f51\u7edc\u73af\u5883\n�� \u7a0d\u540e\u518d\u8bd5",
+        description: "🔒 " + message + "\n\n💡 \u53ef\u80fd\u7684\u89e3\u51b3\u65b9\u6848：\n• \u7b49\u5f85\u4e00\u6bb5\u65f6\u95f4\u540e\u91cd\u65b0\u5c1d\u8bd5\n• \u68c0\u67e5\u7f51\u7edc\u8fde\u63a5\n• \u66f4\u6362\u7f51\u7edc\u73af\u5883\n• \u7a0d\u540e\u518d\u8bd5",
         playerType: "none"
     };
 }
