@@ -1,11 +1,11 @@
 // == Metadata =================================================================
 var WidgetMetadata = {
   id: "ti.bemarkt.javday",
-  title: "JAVDay",
+  title: "JAVDays",
   description: "获取 JAVDay 推荐",
-  author: "Ti",
+  author: "Tis",
   site: "https://javday.app",
-  version: "1.2.0",
+  version: "1.5.0",
   requiredVersion: "0.0.1",
   detailCacheDuration: 60,
   modules: [
