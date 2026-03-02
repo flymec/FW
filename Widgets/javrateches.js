@@ -1277,6 +1277,59 @@ async function fetchDataForPath(path, params = {}) {
 }
 
 
+// 在文件开头添加常量
+const VIDEO_DOMAINS = ['iframe.mediadelivery.net', 'cdn.javrate.com', 'v.javrate.com']; // 可根据实际情况调整
+
+// 新增函数：解析嵌入页获取真实视频地址
+async function resolveVideoUrl(embedUrl, referer) {
+  try {
+    console.log(`尝试解析嵌入页: ${embedUrl}`);
+    const response = await Widget.http.get(embedUrl, {
+      headers: {
+        'User-Agent': getCommonHeaders()['User-Agent'],
+        'Referer': referer,
+      }
+    });
+    if (!response.data) return null;
+
+    const $ = Widget.html.load(response.data);
+    // 尝试多种方式获取视频源
+    let videoSrc = $('video source').attr('src') || $('video').attr('src');
+    if (videoSrc) {
+      // 转换为绝对URL
+      if (!videoSrc.startsWith('http')) {
+        const base = new URL(embedUrl).origin;
+        videoSrc = new URL(videoSrc, base).href;
+      }
+      return videoSrc;
+    }
+
+    // 检查是否有 hls.js 配置 (常见于 videojs 或 hls.js)
+    const scripts = $('script').html();
+    const hlsMatch = scripts.match(/src:\s*['"]([^'"]+\.m3u8[^'"]*)['"]/);
+    if (hlsMatch) {
+      let hlsUrl = hlsMatch[1];
+      if (!hlsUrl.startsWith('http')) {
+        const base = new URL(embedUrl).origin;
+        hlsUrl = new URL(hlsUrl, base).href;
+      }
+      return hlsUrl;
+    }
+
+    // 检查 iframe 嵌套 (递归一层，避免死循环)
+    const iframe = $('iframe').attr('src');
+    if (iframe && !iframe.includes(embedUrl)) {
+      return await resolveVideoUrl(iframe, referer);
+    }
+
+    return null;
+  } catch (e) {
+    console.error('解析嵌入页失败:', e.message);
+    return null;
+  }
+}
+
+// 修改 loadDetail 函数
 async function loadDetail(linkValue) {
   let currentBaseUrl = "https://www.javrate.com";
   
@@ -1296,7 +1349,29 @@ async function loadDetail(linkValue) {
       throw new Error("无法加载详情页面: " + linkValue);
     }
     
-    const detailData = parseDetailPage(response.data, linkValue);
+    let detailData = parseDetailPage(response.data, linkValue);
+
+    // 如果 videoUrl 存在且是嵌入页域名，尝试解析真实视频地址
+    if (detailData.videoUrl) {
+      try {
+        const urlObj = new URL(detailData.videoUrl);
+        // 如果视频域名是已知的嵌入域名，或者路径包含 embed，尝试解析
+        if (VIDEO_DOMAINS.some(domain => urlObj.hostname.includes(domain)) || urlObj.pathname.includes('/embed/')) {
+          console.log('检测到嵌入页，尝试解析真实视频地址...');
+          const realVideoUrl = await resolveVideoUrl(detailData.videoUrl, BASE_URL);
+          if (realVideoUrl) {
+            detailData.videoUrl = realVideoUrl;
+            // 更新 Referer 为视频源域名
+            const realDomain = new URL(realVideoUrl).origin;
+            detailData.customHeaders = { Referer: realDomain };
+          } else {
+            console.log('无法解析真实视频地址，保留原嵌入页 URL');
+          }
+        }
+      } catch (e) {
+        console.error('解析 videoUrl 失败:', e.message);
+      }
+    }
 
     return {
       id: linkValue,
