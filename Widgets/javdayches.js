@@ -507,10 +507,13 @@ async function search(params = {}) {
 
   const encodedKeyword = encodeURIComponent(keyword);
   let searchUrl;
+
   if (page === 1) {
-    searchUrl = `https://javday.app/search/?wd=${encodedKeyword}`;
+    // 第1页使用路径格式（匹配热门链接）
+    searchUrl = `https://javday.app/search/wd/${encodedKeyword}/`;
   } else {
-    searchUrl = `https://javday.app/search/page/${page}/wd/${encodedKeyword}/`;
+    // 分页格式：/search/wd/关键词/page/2/
+    searchUrl = `https://javday.app/search/wd/${encodedKeyword}/page/${page}/`;
   }
 
   try {
@@ -532,7 +535,7 @@ async function search(params = {}) {
       const $item = $(element);
       let link = $item.attr("href");
       const title = $item.find(".videoBox-info .title").text().trim();
-      const imgSrc = getCoverImgSrc($item); // 你的提取函数
+      const imgSrc = getCoverImgSrc($item);
 
       if (!link || !title) return;
       
