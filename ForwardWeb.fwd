@@ -49,7 +49,7 @@
       "url": "https://raw.githubusercontent.com/flymec/FW/refs/heads/main/Widgets/javrate.js"
     },
     {
-      "id": "unknow.baranwang.xvideos",
+      "id": xvideos",
       "title": "XVideos",
       "description": "Xvideos",
       "requiredVersion": "0.0.1",
@@ -58,7 +58,7 @@
       "url": "https://unpkg.com/@forward-widget/nsfw/xvideos"
 },
 {
-      "id": "unknow.baranwang.xvideos",
+      "id": "missav",
       "title": "missav",
       "description": "missav",
       "requiredVersion": "0.0.1",
